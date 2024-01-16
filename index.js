@@ -14,7 +14,12 @@ const chatRoutes = require("./Routes/chatRoutes");
 
 const { Server } = require("socket.io");
 const { initializeIO } = require("./socket");
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
 initializeIO(io);
 
