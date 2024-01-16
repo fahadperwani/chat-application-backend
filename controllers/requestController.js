@@ -1,6 +1,7 @@
-const { default: mongoose } = require("mongoose");
+const { mongoose } = require("mongoose");
 const Request = require("../models/requestModel");
 const User = require("../models/userModel");
+const Chat = require("../models/chatModel");
 
 const createRequest = async (req, res) => {
   try {
@@ -56,6 +57,10 @@ const acceptRequest = async (req, res) => {
   console.log("Acceptttt");
   try {
     const request = await Request.findOneAndDelete(req.body);
+    const chat = new Chat({
+      participants: [request.senderId, request.recieverId],
+    });
+    await chat.save();
     await User.findOneAndUpdate(
       { _id: request.senderId },
       {
@@ -69,8 +74,10 @@ const acceptRequest = async (req, res) => {
         $push: { friends: request.senderId },
       }
     );
+
     res.status(200).send({ res: "OK" });
   } catch (error) {
+    console.log(error);
     res.status(401).send({ error });
   }
 };

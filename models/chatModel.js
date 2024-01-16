@@ -4,9 +4,9 @@ const Schema = require("mongoose").Schema;
 
 const chatSchema = new Schema(
   {
-    participants: [{ type: Schema.Types.ObjectId, ref: "Request" }],
+    participants: [{ type: String, ref: "Request" }],
     lastMessage: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "ChatMessage",
     },
   },
