@@ -28,6 +28,7 @@ const initializeIO = (io) => {
     });
 
     socket.on("friend-request-sent", async (response) => {
+      console.log("Friend request");
       console.log(JSON.stringify(response));
       const user = await User.findOne({ _id: response.senderId });
       io.to(response.recieverId).emit("friend-request-from-server", user);
@@ -35,11 +36,11 @@ const initializeIO = (io) => {
 
     socket.on("request-accepted", (response) => {
       io.to(response.reciever._id).emit("request-accepted-from-server", {
-        chat: response.chat,
+        _id: response.chat._id,
         friend: response.sender,
       });
       io.to(response.sender._id).emit("request-accepted-from-server", {
-        chat: response.chat,
+        _id: response.chat._id,
         friend: response.reciever,
       });
     });
@@ -49,8 +50,14 @@ const initializeIO = (io) => {
       console.log("Disconnected, id: " + socket.id);
     });
 
-    socket.on("typing-started", (id) => {
-      io.to(id).emit("typing-started-from-server", id);
+    socket.on("typing", ({ id, chatId }) => {
+      io.to(id).emit("typing-started-from-server", chatId);
+      io.to(id).emit("typing-started-from-server/" + chatId);
+    });
+
+    socket.on("typing-stopped", ({ id, chatId }) => {
+      io.to(id).emit("typing-stopped-from-server", chatId);
+      io.to(id).emit("typing-stopped-from-server/" + chatId);
     });
   });
 };
