@@ -4,6 +4,8 @@ const joinChat = (socket) => {
   });
 };
 
+const User = require("../models/userModel");
+
 const sendRequest = (io, socket) => {
   socket.on("send-message", (message) => {
     console.log("Message: " + message.reciever);
@@ -16,6 +18,8 @@ const sendRequest = (io, socket) => {
 const initializeIO = (io) => {
   io.on("connection", (socket) => {
     const id = socket.handshake.query["id"];
+
+    console.log("Joined.......");
     socket.join(id);
 
     socket.on("send-message", (message) => {
@@ -23,8 +27,30 @@ const initializeIO = (io) => {
       io.to(socket.id).emit("update-last-message", message);
     });
 
+    socket.on("friend-request-sent", async (response) => {
+      console.log(JSON.stringify(response));
+      const user = await User.findOne({ _id: response.senderId });
+      io.to(response.recieverId).emit("friend-request-from-server", user);
+    });
+
+    socket.on("request-accepted", (response) => {
+      io.to(response.reciever._id).emit("request-accepted-from-server", {
+        chat: response.chat,
+        friend: response.sender,
+      });
+      io.to(response.sender._id).emit("request-accepted-from-server", {
+        chat: response.chat,
+        friend: response.reciever,
+      });
+    });
+
     socket.on("disconnect", () => {
+      socket.leave(socket.id);
       console.log("Disconnected, id: " + socket.id);
+    });
+
+    socket.on("typing-started", (id) => {
+      io.to(id).emit("typing-started-from-server", id);
     });
   });
 };

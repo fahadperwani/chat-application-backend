@@ -34,7 +34,6 @@ const sendMessage = async (req, res) => {
     // const {content, sender, chat}
     const message = new Message(req.body);
     await message.save();
-    console.log(message);
     const chat = await Chat.findByIdAndUpdate(new ObjectId(req.body.chat), {
       lastMessage: message._id,
     });

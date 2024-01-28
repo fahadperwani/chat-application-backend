@@ -61,21 +61,22 @@ const acceptRequest = async (req, res) => {
       participants: [request.senderId, request.recieverId],
     });
     await chat.save();
-    await User.findOneAndUpdate(
+    const sender = await User.findOneAndUpdate(
       { _id: request.senderId },
       {
         $push: { friends: request.recieverId },
         $pull: { requestsSent: request.recieverId },
       }
     );
-    await User.findOneAndUpdate(
+    const reciever = await User.findOneAndUpdate(
       { _id: request.recieverId },
       {
         $push: { friends: request.senderId },
       }
     );
-
-    res.status(200).send({ res: "OK" });
+    console.log("Sender: " + sender);
+    console.log("Reciever: " + reciever);
+    res.status(200).send({ chat, sender, reciever });
   } catch (error) {
     console.log(error);
     res.status(401).send({ error });
