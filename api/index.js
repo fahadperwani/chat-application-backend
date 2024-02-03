@@ -16,7 +16,7 @@ const { Server } = require("socket.io");
 const { initializeIO } = require("../socket");
 const io = new Server(server, {
   cors: {
-    origin: "https://chat-appi.onrender.com/",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
@@ -26,8 +26,7 @@ app.use(function (req, res, next) {
   // res.header("Access-Control-Allow-Origin", "*");
   const allowedOrigins = [
     "http://localhost:3000",
-    "http://gamebrag.onrender.com",
-    "https://gamebrag.onrender.com",
+    "https://chat-appi.onrender.com",
   ];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
