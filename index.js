@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 });
 
 mongoose
-  .connect("mongodb://localhost:27017")
+  .connect(env.MONGO_DB_URL)
   .then(() => console.log("Database connected"));
 
 server.listen(env.PORT, () => console.log("Connected to port " + env.PORT));
