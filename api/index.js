@@ -16,7 +16,7 @@ const { Server } = require("socket.io");
 const { initializeIO } = require("../socket");
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://chat-appi.onrender.com/",
     methods: ["GET", "POST"],
   },
 });
