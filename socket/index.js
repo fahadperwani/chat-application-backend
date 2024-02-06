@@ -1,9 +1,3 @@
-const joinChat = (socket) => {
-  socket.on("join-chat", (chatId) => {
-    socket.join(chatId);
-  });
-};
-
 const User = require("../models/userModel");
 
 const sendRequest = (io, socket) => {
@@ -19,7 +13,6 @@ const initializeIO = (io) => {
   io.on("connection", (socket) => {
     const id = socket.handshake.query["id"];
 
-    console.log("Joined.......");
     socket.join(id);
 
     socket.on("send-message", (message) => {
@@ -28,7 +21,6 @@ const initializeIO = (io) => {
     });
 
     socket.on("friend-request-sent", async (response) => {
-      console.log("Friend request");
       console.log(JSON.stringify(response));
       const user = await User.findOne({ _id: response.senderId });
       io.to(response.recieverId).emit("friend-request-from-server", user);
@@ -47,7 +39,6 @@ const initializeIO = (io) => {
 
     socket.on("disconnect", () => {
       socket.leave(socket.id);
-      console.log("Disconnected, id: " + socket.id);
     });
 
     socket.on("typing", ({ id, chatId }) => {
