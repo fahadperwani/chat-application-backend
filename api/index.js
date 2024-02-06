@@ -28,6 +28,7 @@ app.use(function (req, res, next) {
     "http://localhost:3000",
     "https://chat-appi.onrender.com",
     "https://fahadperwani.github.io",
+    "https://fahadperwani.github.io",
   ];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
