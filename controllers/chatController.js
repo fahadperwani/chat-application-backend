@@ -7,17 +7,21 @@ const getChats = async (req, res) => {
   const _id = req.params.id;
   try {
     const chats = await Chat.find({ participants: _id });
+    console.log("chats: " + chats);
     const result = await Promise.all(
       chats.map(async (chat) => {
         const other = chat.participants.filter((p) => p != _id)[0];
         const user = await User.findOne({ _id: other });
         let msg = chat.lastMessage;
+        let msgs = await Message.find({ chat: chat._id });
+        console.log("msgs: " + msgs);
         if (msg) {
           msg = await Message.findById(new ObjectId(msg));
         }
         return {
           _id: chat._id,
           lastMessage: msg,
+          messages: msgs,
           friend: user,
         };
       })

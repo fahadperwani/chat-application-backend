@@ -23,6 +23,7 @@ const initializeIO = (io) => {
     socket.join(id);
 
     socket.on("send-message", (message) => {
+      console.log("send-mmessage: " + JSON.stringify(message));
       io.to(message.reciever).emit("message-from-server", message);
       io.to(socket.id).emit("update-last-message", message);
     });
